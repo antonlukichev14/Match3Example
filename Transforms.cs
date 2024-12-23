@@ -47,7 +47,7 @@ namespace Match3Example
 
             Matrix4 matrixposition = Matrix4.CreateTranslation(position.X, position.Y, position.Z);
 
-            return matrixposition * CreateRotationMatrixFromEuler(rotation) * matrixscale;
+            return matrixscale * matrixposition * CreateRotationMatrixFromEuler(rotation);
         }
 
         public static Matrix4 CreateRotationMatrixFromEuler(Vector3 eulerAngles)

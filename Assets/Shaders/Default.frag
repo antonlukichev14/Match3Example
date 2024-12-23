@@ -9,5 +9,8 @@ uniform vec2 tiling;
 void main()
 {
     vec2 tiledCoords = texCoord * tiling;
-    FragColor = texture(texture0, tiledCoords);
+    vec4 texColor = texture(texture0, tiledCoords);
+    if(texColor.a < 0.3)
+        discard;
+    FragColor = texColor;
 }

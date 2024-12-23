@@ -51,7 +51,7 @@ namespace Match3Example
 
             shader.SetUniformMatix4("model", transforms.GetModelMatrix());
 
-            GL.DrawArrays(PrimitiveType.Triangles, 0, vertices.Length / 3);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, vertices.Length / 8);
         }
     }
 }

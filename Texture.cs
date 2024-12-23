@@ -37,6 +37,14 @@ namespace Match3Example
             GL.BindTexture(TextureTarget.Texture2D, 0);
         }
 
+        public void SetTextureWrapping(int WrapMode)
+        {
+            GL.BindTexture(TextureTarget.Texture2D, Handle);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, WrapMode);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, WrapMode);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+        }
+
         public void Use(Shader shader)
         {
             shader.SetTiling(tiling);
