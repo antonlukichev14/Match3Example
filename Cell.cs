@@ -14,7 +14,7 @@ namespace Match3Example
 
         public Cell(Vector3 position) 
         {
-            transforms = new Transforms(position);
+            transforms = new Transforms(position, Vector3.Zero, Vector3.One * 0.7f);
         }
 
         public Cell(Vector3 position, Element element)

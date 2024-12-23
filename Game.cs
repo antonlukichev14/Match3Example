@@ -23,7 +23,7 @@ namespace Match3Example
 
         RenderObject GameField;
 
-        Cell[,] cells = new Cell[8, 8];
+        Cells cells;
 
         public double deltaTime;
         public double currentTime;
@@ -68,13 +68,7 @@ namespace Match3Example
 
             Random random = new Random();
 
-            for (int i = 0; i < 8; i++)
-            {
-                for (int j = 0; j < 8; j++)
-                {
-                    cells[i, j] = new Cell(new Vector3(i - 3.5f, 0, j - 3.5f), elements[random.Next(0, 5)]);
-                }
-            }
+            cells = new Cells(new Vector2i(8, 8), new Vector2(-3.5f, -3.5f), elements);
 
             defaultShader = new Shader(Path.GetAssetPath("Shaders/Default.vert"), Path.GetAssetPath("Shaders/Default.frag"));
             selectedShader = new Shader(Path.GetAssetPath("Shaders/Selected.vert"), Path.GetAssetPath("Shaders/Selected.frag"));
@@ -101,12 +95,12 @@ namespace Match3Example
                         selectedShader.Use();
                         camera.Use(selectedShader);
                         selectedShader.SetUniformFloat("time", (float)currentTime);
-                        cells[i, j].Render(selectedShader);
+                        cells.cells[i, j].Render(selectedShader);
                         defaultShader.Use();
                     }
                     else
                     {
-                        cells[i, j].Render(defaultShader);
+                        cells.cells[i, j].Render(defaultShader);
                     }
                 }
             }

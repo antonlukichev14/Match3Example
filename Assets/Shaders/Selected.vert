@@ -15,6 +15,6 @@ void main()
 {
     texCoord = aTexCoord;
 
-    float size = 1 + ((sin(time * 3) + 1) / 2) * .2;
+    float size = 1.1 + ((sin(time * 3) + 1) / 2) * .2;
     gl_Position = vec4(aPosition * size, 1.0) * model * view * projection;
 }
