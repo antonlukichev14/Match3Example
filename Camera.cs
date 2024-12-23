@@ -70,8 +70,8 @@ namespace Match3Example
 
         public void Move(Vector2 velocity)
         {
-            position += up * velocity.X * noclipSpeed * Game.instance.deltaTime;
-            position -= Vector3.Normalize(Vector3.Cross(front, up)) * noclipSpeed * velocity.Y * Game.instance.deltaTime;
+            position += up * velocity.X * noclipSpeed * (float)Game.instance.deltaTime;
+            position -= Vector3.Normalize(Vector3.Cross(front, up)) * noclipSpeed * velocity.Y * (float)Game.instance.deltaTime;
         }
     }
 }
