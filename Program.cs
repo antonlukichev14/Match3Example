@@ -4,7 +4,10 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            using (Game game = new Game(1920, 1000, "Match3Example"))
+            {
+                game.Run();
+            }
         }
     }
 }
