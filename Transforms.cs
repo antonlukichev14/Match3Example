@@ -9,9 +9,9 @@ namespace Match3Example
 {
     class Transforms
     {
-        Vector3 position;
-        Vector3 rotation;
-        Vector3 scale;
+        public Vector3 position;
+        public Vector3 rotation;
+        public Vector3 scale;
 
         public Transforms()
         {

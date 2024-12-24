@@ -2,6 +2,7 @@
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTK_Test_Lighting_01;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace Match3Example
         Camera camera;
 
         Shader defaultShader;
+        Shader hoverShader;
         Shader selectedShader;
 
         RenderObject GameField;
@@ -28,7 +30,10 @@ namespace Match3Example
         public double deltaTime;
         public double currentTime;
 
-        public Vector2 currentCell = new Vector2(-1, -1);
+        public Vector2i hoverCell = new Vector2i(-1, -1);
+        public Vector2i selectedCell = new Vector2i(-1, -1);
+
+        public GameState gameState = GameState.Interact;
 
         public Game(int width, int height, string title) : base(GameWindowSettings.Default, new NativeWindowSettings() { Size = (width, height), Title = title, NumberOfSamples = 4, Vsync = VSyncMode.On }) { }
 
@@ -71,7 +76,9 @@ namespace Match3Example
             cells = new Cells(new Vector2i(8, 8), new Vector2(-3.5f, -3.5f), elements);
 
             defaultShader = new Shader(Path.GetAssetPath("Shaders/Default.vert"), Path.GetAssetPath("Shaders/Default.frag"));
+            hoverShader = new Shader(Path.GetAssetPath("Shaders/Hover.vert"), Path.GetAssetPath("Shaders/Hover.frag"));
             selectedShader = new Shader(Path.GetAssetPath("Shaders/Selected.vert"), Path.GetAssetPath("Shaders/Selected.frag"));
+
             camera = new Camera(20f);
         }
 
@@ -90,12 +97,19 @@ namespace Match3Example
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    if(currentCell.X == i && currentCell.Y == j)
+                    if(gameState == GameState.Interact && selectedCell.X == i && selectedCell.Y == j)
                     {
                         selectedShader.Use();
                         camera.Use(selectedShader);
-                        selectedShader.SetUniformFloat("time", (float)currentTime);
                         cells.cells[i, j].Render(selectedShader);
+                        defaultShader.Use();
+                    }
+                    else if(gameState == GameState.Interact && hoverCell.X == i && hoverCell.Y == j)
+                    {
+                        hoverShader.Use();
+                        camera.Use(hoverShader);
+                        hoverShader.SetUniformFloat("time", (float)currentTime);
+                        cells.cells[i, j].Render(hoverShader);
                         defaultShader.Use();
                     }
                     else
@@ -114,6 +128,73 @@ namespace Match3Example
 
             deltaTime = args.Time;
             currentTime += deltaTime;
+
+            switch (gameState)
+            {
+                case GameState.Interact:
+                    InteractWithField();
+                    break;
+                case GameState.SwitchElements:
+                    SwitchElements(args.Time * 3);
+                    break;
+            }
+        }
+
+        void InteractWithField()
+        {
+            if (MouseState.IsButtonPressed(MouseButton.Left))
+            {
+                if(selectedCell.X == -1 && selectedCell.Y == -1)
+                {
+                    selectedCell.X = hoverCell.X; selectedCell.Y = hoverCell.Y;
+                }
+                else
+                {
+                    if(Math.Abs(hoverCell.X - selectedCell.X) < 2 && Math.Abs(hoverCell.Y - selectedCell.Y) < 2 && ((hoverCell.X != selectedCell.X && hoverCell.Y == selectedCell.Y) || (hoverCell.X == selectedCell.X && hoverCell.Y != selectedCell.Y)))
+                    {
+                        se_time = 0;
+                        se_cell1 = new Vector2i(selectedCell.X, selectedCell.Y);
+                        se_cell2 = new Vector2i(hoverCell.X, hoverCell.Y);
+                        se_cell1pos = cells.cells[hoverCell.X, hoverCell.Y].transforms.position;
+                        se_cell2pos = cells.cells[selectedCell.X, selectedCell.Y].transforms.position;
+
+                        gameState = GameState.SwitchElements;
+                    }
+                    else
+                    {
+                        selectedCell.X = -1;
+                        selectedCell.Y = -1;
+                    }
+                }
+            }
+        }
+
+        double se_time;
+        private Vector2i se_cell1;
+        private Vector2i se_cell2;
+        private Vector3 se_cell1pos;
+        private Vector3 se_cell2pos;
+        void SwitchElements(double se_deltatime)
+        {
+            if(se_time + se_deltatime >= 1)
+            {
+                se_time = 0;
+
+                Cell _cell = cells.cells[se_cell1.X, se_cell1.Y];
+                cells.cells[se_cell1.X, se_cell1.Y] = cells.cells[se_cell2.X, se_cell2.Y];
+                cells.cells[se_cell2.X, se_cell2.Y] = _cell;
+
+                cells.cells[se_cell1.X, se_cell1.Y].transforms.position = se_cell2pos;
+                cells.cells[se_cell2.X, se_cell2.Y].transforms.position = se_cell1pos;
+
+                gameState = GameState.Match3CheckSE;
+
+                return;
+            }
+
+            se_time += se_deltatime;
+            cells.cells[se_cell1.X, se_cell1.Y].transforms.position = Vector3.Lerp(se_cell2pos, se_cell1pos, (float)se_time);
+            cells.cells[se_cell2.X, se_cell2.Y].transforms.position = Vector3.Lerp(se_cell1pos, se_cell2pos, (float)se_time);
         }
 
         protected override void OnMouseMove(MouseMoveEventArgs e)
@@ -125,13 +206,13 @@ namespace Match3Example
             
             if(mouseWorldPos.X > 0 && mouseWorldPos.X < 8 && mouseWorldPos.Z > 0 && mouseWorldPos.Z < 8)
             {
-                currentCell.X = (float)Math.Ceiling(mouseWorldPos.X) - 1;
-                currentCell.Y = (float)Math.Ceiling(mouseWorldPos.Z) - 1;
+                hoverCell.X = (int)Math.Ceiling(mouseWorldPos.X) - 1;
+                hoverCell.Y = (int)Math.Ceiling(mouseWorldPos.Z) - 1;
             }
             else
             {
-                currentCell.X = -1;
-                currentCell.Y = -1;
+                hoverCell.X = -1;
+                hoverCell.Y = -1;
             }
         }
 
@@ -159,5 +240,12 @@ namespace Match3Example
 
             GL.Viewport(0, 0, e.Width, e.Height);
         }
+    }
+
+    public enum GameState
+    {
+        Interact,
+        SwitchElements,
+        Match3CheckSE
     }
 }
