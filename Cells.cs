@@ -14,8 +14,12 @@ namespace Match3Example
 
         Element[] elements;
 
+        private Vector2 transormOffset;
+
         public Cells(Vector2i cellsSize, Vector2 transormOffset, Element[] elements)
         {
+            this.transormOffset = transormOffset;
+
             cells = new Cell[cellsSize.X, cellsSize.Y];
             this.elements = elements;
 
@@ -75,6 +79,11 @@ namespace Match3Example
                     cells[i, j].element = elements[cellsByIndex[i, j]];
                 }
             }
+        }
+
+        public Vector3 GetNewPositionByIndex(Vector2i index)
+        {
+            return new Vector3(index.X + transormOffset.X, 0, index.Y + transormOffset.Y);
         }
     }
 }

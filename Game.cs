@@ -7,6 +7,7 @@ using OpenTK_Test_Lighting_01;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -135,7 +136,16 @@ namespace Match3Example
                     InteractWithField();
                     break;
                 case GameState.SwitchElements:
-                    SwitchElements(args.Time * 3);
+                    SwitchElements(3, false);
+                    break;
+                case GameState.Match3CheckSE:
+                    Match3CheckSE();
+                    break;
+                case GameState.SwitchElementsREVERSE:
+                    SwitchElements(3, true);
+                    break;
+                case GameState.ElementsFall:
+                    ElementsFallAnimation(0.1f);
                     break;
             }
         }
@@ -160,11 +170,9 @@ namespace Match3Example
 
                         gameState = GameState.SwitchElements;
                     }
-                    else
-                    {
-                        selectedCell.X = -1;
-                        selectedCell.Y = -1;
-                    }
+
+                    selectedCell.X = -1;
+                    selectedCell.Y = -1;
                 }
             }
         }
@@ -174,9 +182,9 @@ namespace Match3Example
         private Vector2i se_cell2;
         private Vector3 se_cell1pos;
         private Vector3 se_cell2pos;
-        void SwitchElements(double se_deltatime)
+        void SwitchElements(float animSpeed, bool toInteract)
         {
-            if(se_time + se_deltatime >= 1)
+            if(se_time + deltaTime * animSpeed >= 1)
             {
                 se_time = 0;
 
@@ -187,14 +195,107 @@ namespace Match3Example
                 cells.cells[se_cell1.X, se_cell1.Y].transforms.position = se_cell2pos;
                 cells.cells[se_cell2.X, se_cell2.Y].transforms.position = se_cell1pos;
 
-                gameState = GameState.Match3CheckSE;
+                if(toInteract)
+                    gameState = GameState.Interact;
+                else
+                    gameState = GameState.Match3CheckSE;
 
                 return;
             }
 
-            se_time += se_deltatime;
+            se_time += deltaTime * animSpeed;
             cells.cells[se_cell1.X, se_cell1.Y].transforms.position = Vector3.Lerp(se_cell2pos, se_cell1pos, (float)se_time);
             cells.cells[se_cell2.X, se_cell2.Y].transforms.position = Vector3.Lerp(se_cell1pos, se_cell2pos, (float)se_time);
+        }
+
+        void Match3CheckSE()
+        {
+            if (Match3.IsWithoutDelete(cells.cells))
+            {
+                gameState = GameState.SwitchElementsREVERSE;
+                return;
+            }
+
+            bool[,] deleteCells = Match3.CheckDelete(cells.cells);
+
+            for (int i = 0; i < deleteCells.GetLength(0); i++)
+            {
+                for (int j = 0; j < deleteCells.GetLength(1); j++)
+                {
+                    if (deleteCells[i, j])
+                    {
+                        cells.cells[i, j].element = null;
+                    }
+                }
+            }
+
+            efa_elementsFall = Match3.ElementsFall(cells.cells);
+            efa_InstantiateList();
+            gameState = GameState.ElementsFall;
+        }
+
+        void efa_InstantiateList()
+        {
+            efa_cells = new List<(Cell cCell, Vector2i cIndex, float floorPos, float gValue)>();
+
+            for (int i = 0; i < efa_elementsFall.GetLength(0); i++)
+            {
+                for(int j = 0; j <  efa_elementsFall.GetLength(1); j++)
+                {
+                    if (efa_elementsFall[i, j] != 0)
+                    {
+                        Cell cCell = cells.cells[i, j];
+                        Vector2i cIndex = new Vector2i(i, j);
+                        float floorPos = cells.GetNewPositionByIndex(new Vector2i(cIndex.X, cIndex.Y - efa_elementsFall[cIndex.X, cIndex.Y])).Z;
+                        efa_cells.Add((cCell, cIndex, floorPos, 0));
+                    }
+                }
+            }
+        }
+
+        int[,] efa_elementsFall;
+        List<(Cell cCell, Vector2i cIndex, float floorPos, float gValue)> efa_cells;
+        void ElementsFallAnimation(double graviteSpeed)
+        {
+            List<(Cell cCell, Vector2i cIndex, float floorPos, float gValue)> deleteObjects = new List<(Cell cCell, Vector2i cIndex, float floorPos, float gValue)>();
+            int efa_cells_length = efa_cells.Count;
+
+            if (efa_cells_length == 0)
+            {
+                throw new Exception("New State");
+                return;
+            }
+
+            for (int i = 0; i < efa_cells_length; i++)
+            {
+                (Cell cCell, Vector2i cIndex, float floorPos, float gValue) sCell = efa_cells[i];
+                sCell.gValue += (float)(graviteSpeed * deltaTime);
+                if (sCell.cCell.transforms.position.Z - sCell.gValue <= sCell.floorPos)
+                {
+                    sCell.cCell.transforms.position.Z = sCell.floorPos;
+                    Vector2i newIndex = new Vector2i(sCell.cIndex.X, sCell.cIndex.Y - efa_elementsFall[sCell.cIndex.X, sCell.cIndex.Y]);
+
+                    Cell _cell = cells.cells[newIndex.X, newIndex.Y];
+                    cells.cells[newIndex.X, newIndex.Y] = sCell.cCell;
+                    cells.cells[sCell.cIndex.X, sCell.cIndex.Y] = _cell;
+
+                    efa_cells[i] = sCell;
+                    deleteObjects.Add(sCell);
+                }
+                else
+                {
+                    sCell.cCell.transforms.position.Z -= sCell.gValue;
+                    efa_cells[i] = sCell;
+                }
+            }
+
+            for (int i = 0; i < deleteObjects.Count; i++)
+            {
+                if (!efa_cells.Remove(deleteObjects[i]))
+                {
+                    throw new Exception();
+                }
+            }
         }
 
         protected override void OnMouseMove(MouseMoveEventArgs e)
@@ -246,6 +347,8 @@ namespace Match3Example
     {
         Interact,
         SwitchElements,
-        Match3CheckSE
+        Match3CheckSE,
+        SwitchElementsREVERSE,
+        ElementsFall
     }
 }
