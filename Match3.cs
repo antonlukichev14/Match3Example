@@ -13,7 +13,7 @@ namespace Match3Example
         {
             bool[,] deleteElements = new bool[cells.GetLength(0), cells.GetLength(1)];
 
-            for(int i = 0; i < cells.GetLength(0); i++)
+            for (int i = 0; i < cells.GetLength(0); i++)
             {
                 for (int j = 0; j < cells.GetLength(1); j++)
                 {
@@ -22,7 +22,7 @@ namespace Match3Example
                     int xCount = 1;
                     int yCount = 1;
 
-                    if(i + 1 < cells.GetLength(0))
+                    if (i + 1 < cells.GetLength(0))
                     {
                         if (cells[i + 1, j].element != null && cells[i + 1, j].element.ID == currentIDelement)
                         {
@@ -33,7 +33,7 @@ namespace Match3Example
                             }
                         }
                     }
-                    
+
                     if (j + 1 < cells.GetLength(1))
                     {
                         if (cells[i, j + 1].element != null && cells[i, j + 1].element.ID == currentIDelement)
@@ -46,9 +46,9 @@ namespace Match3Example
                         }
                     }
 
-                    if(xCount > 2)
+                    if (xCount > 2)
                     {
-                        for(int m = 0; m < xCount; m++)
+                        for (int m = 0; m < xCount; m++)
                         {
                             deleteElements[i + m, j] = true;
                         }
@@ -129,9 +129,9 @@ namespace Match3Example
         {
             bool[,] deleteElements = CheckDelete(cells);
 
-            for(int i = 0; i < cells.GetLength(0); i++)
+            for (int i = 0; i < cells.GetLength(0); i++)
             {
-                for(int j = 0; j < cells.GetLength(1); j++)
+                for (int j = 0; j < cells.GetLength(1); j++)
                 {
                     if (deleteElements[i, j] == true) return false;
                 }
@@ -220,7 +220,7 @@ namespace Match3Example
             return newCellsByIndex;
         }
 
-        public static int[,] ElementsFall(Cell[,] cells) 
+        public static int[,] ElementsFall(Cell[,] cells)
         {
             Vector2i cellSize = new Vector2i(cells.GetLength(0), cells.GetLength(1));
             bool[,] cellNotEmpty = new bool[cellSize.X, cellSize.Y];
@@ -228,13 +228,13 @@ namespace Match3Example
 
             for (int i = 0; i < cellSize.X; i++)
             {
-                for(int j = 0; j < cellSize.Y; j++)
+                for (int j = 0; j < cellSize.Y; j++)
                 {
                     if (cells[i, j].element != null)
                     {
                         int mincell = cellSize.Y - 1;
 
-                        for(int jy = cellSize.Y - 1; jy > -1; jy--)
+                        for (int jy = cellSize.Y - 1; jy > -1; jy--)
                         {
                             if (!cellNotEmpty[i, jy] && jy < mincell)
                             {
@@ -248,9 +248,9 @@ namespace Match3Example
                 }
             }
 
-            for(int i = cellSize.X - 1; i >= 0; i--)
+            for (int i = cellSize.X - 1; i >= 0; i--)
             {
-                for(int j = cellSize.Y - 1;j >= 0; j--)
+                for (int j = cellSize.Y - 1; j >= 0; j--)
                 {
                     Console.Write(elementsFall[j, i]);
                 }
@@ -258,6 +258,26 @@ namespace Match3Example
             }
 
             return elementsFall;
+        }
+
+        public static (bool status, bool[,] empty) CheckEmptyCells(Cell[,] cells)
+        {
+            bool status = false;
+            bool[,] empty = new bool[cells.GetLength(0), cells.GetLength(1)];
+
+            for(int i = 0; i < cells.GetLength(0); i++)
+            {
+                for(int j = 0; j < cells.GetLength(1); j++)
+                {
+                    if (cells[i, j].element == null)
+                    {
+                        status = true;
+                        empty[i, j] = true;
+                    }
+                }
+            }
+
+            return (status, empty);
         }
     }
 }

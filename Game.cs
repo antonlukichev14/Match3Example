@@ -139,13 +139,19 @@ namespace Match3Example
                     SwitchElements(3, false);
                     break;
                 case GameState.Match3CheckSE:
-                    Match3CheckSE();
+                    Match3Check(true);
                     break;
                 case GameState.SwitchElementsREVERSE:
                     SwitchElements(3, true);
                     break;
                 case GameState.ElementsFall:
                     ElementsFallAnimation(0.1f);
+                    break;
+                case GameState.Match3Check:
+                    Match3Check(false);
+                    break;
+                case GameState.GenerateNewElements:
+                    GenerateNewElements();
                     break;
             }
         }
@@ -208,12 +214,23 @@ namespace Match3Example
             cells.cells[se_cell2.X, se_cell2.Y].transforms.position = Vector3.Lerp(se_cell1pos, se_cell2pos, (float)se_time);
         }
 
-        void Match3CheckSE()
+        void Match3Check(bool toSE)
         {
             if (Match3.IsWithoutDelete(cells.cells))
             {
-                gameState = GameState.SwitchElementsREVERSE;
-                return;
+                if (toSE)
+                {
+                    gameState = GameState.SwitchElementsREVERSE;
+                    return;
+                }
+
+                (bool status, bool[,] empty) checkEmptyCells = Match3.CheckEmptyCells(cells.cells);
+                if (checkEmptyCells.status)
+                {
+                    gne_empty = checkEmptyCells.empty;
+                    gameState = GameState.GenerateNewElements;
+                    return;
+                }
             }
 
             bool[,] deleteCells = Match3.CheckDelete(cells.cells);
@@ -232,6 +249,12 @@ namespace Match3Example
             efa_elementsFall = Match3.ElementsFall(cells.cells);
             efa_InstantiateList();
             gameState = GameState.ElementsFall;
+        }
+
+        bool[,] gne_empty;
+        void GenerateNewElements()
+        {
+            throw new NotImplementedException();
         }
 
         void efa_InstantiateList()
@@ -262,7 +285,7 @@ namespace Match3Example
 
             if (efa_cells_length == 0)
             {
-                throw new Exception("New State");
+                gameState = GameState.Match3Check;
                 return;
             }
 
@@ -349,6 +372,8 @@ namespace Match3Example
         SwitchElements,
         Match3CheckSE,
         SwitchElementsREVERSE,
-        ElementsFall
+        ElementsFall,
+        Match3Check,
+        GenerateNewElements
     }
 }
