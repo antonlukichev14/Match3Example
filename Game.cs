@@ -145,13 +145,13 @@ namespace Match3Example
                     SwitchElements(3, true);
                     break;
                 case GameState.ElementsFall:
-                    ElementsFallAnimation(0.1f);
+                    ElementsFallAnimation(0.25d);
                     break;
                 case GameState.Match3Check:
                     Match3Check(false);
                     break;
                 case GameState.GenerateNewElements:
-                    GenerateNewElements();
+                    GenerateNewElementsFallAnimation(0.25d);
                     break;
             }
         }
@@ -227,8 +227,12 @@ namespace Match3Example
                 (bool status, bool[,] empty) checkEmptyCells = Match3.CheckEmptyCells(cells.cells);
                 if (checkEmptyCells.status)
                 {
-                    gne_empty = checkEmptyCells.empty;
-                    gameState = GameState.GenerateNewElements;
+                    GenerateNewElements(checkEmptyCells.empty);
+                    return;
+                }
+                else
+                {
+                    gameState = GameState.Interact;
                     return;
                 }
             }
@@ -251,10 +255,95 @@ namespace Match3Example
             gameState = GameState.ElementsFall;
         }
 
-        bool[,] gne_empty;
-        void GenerateNewElements()
+        void GenerateNewElements(bool[,] gne_empty)
         {
-            throw new NotImplementedException();
+            int minY = 8;
+            gne_cells = new List<(Cell cCell, Vector2i cIndex, float floorPos, float gValue)>();
+
+            for (int j = gne_empty.GetLength(1) - 1; j > -1; j--)
+            {
+                for (int i = 0; i < gne_empty.GetLength(0); i++)
+                {
+                    if (gne_empty[i, j]) minY = j;
+                }
+            }
+
+            for (int j = 0; j < gne_empty.GetLength(1); j++)
+            {
+                for (int i = 0; i < gne_empty.GetLength(0); i++)
+                {
+                    if (gne_empty[i, j])
+                    {
+                        cells.cells[i, j].transforms.position.Z = cells.GetNewPositionByIndex(new Vector2i(i, j + gne_empty.GetLength(1) + 2 - minY)).Z;
+                        gne_cells.Add((cells.cells[i, j], new Vector2i(i, j), cells.GetNewPositionByIndex(new Vector2i(i, j)).Z, 0));
+                    }
+                }
+            }
+
+            Console.WriteLine(minY);
+            gameState = GameState.Interact;
+
+            int[,] newcells = new int[cells.cells.GetLength(0), cells.cells.GetLength(1)];
+
+            for (int i = 0;i < newcells.GetLength(0); i++)
+            {
+                for (int j = 0; j < newcells.GetLength(1); j++)
+                {
+                    newcells[i, j] = -1;
+                }
+            }
+
+            newcells = Match3.MaskRandomize(newcells, gne_empty, 0, cells.elements.Length);
+
+            for (int i = 0; i < newcells.GetLength(0); i++)
+            {
+                for (int j = 0; j < newcells.GetLength(1); j++)
+                {
+                    if (newcells[i, j] != -1)
+                        cells.cells[i, j].element = cells.elements[newcells[i, j]];
+                }
+            }
+
+            gameState = GameState.GenerateNewElements;
+        }
+
+        List<(Cell cCell, Vector2i cIndex, float floorPos, float gValue)> gne_cells;
+        void GenerateNewElementsFallAnimation(double graviteSpeed)
+        {
+            List<(Cell cCell, Vector2i cIndex, float floorPos, float gValue)> deleteObjects = new List<(Cell cCell, Vector2i cIndex, float floorPos, float gValue)>();
+            int gne_cells_length = gne_cells.Count;
+
+            if(gne_cells_length == 0)
+            {
+                gameState = GameState.Match3Check;
+                return;
+            }
+
+            for(int i = 0; i < gne_cells_length; i++)
+            {
+                (Cell cCell, Vector2i cIndex, float floorPos, float gValue) sCell = gne_cells[i];
+                sCell.gValue += (float)(graviteSpeed * deltaTime);
+
+                if (sCell.cCell.transforms.position.Z - sCell.gValue <= sCell.floorPos)
+                {
+                    sCell.cCell.transforms.position.Z = sCell.floorPos;
+                    gne_cells[i] = sCell;
+                    deleteObjects.Add(sCell);
+                }
+                else
+                {
+                    sCell.cCell.transforms.position.Z -= sCell.gValue;
+                    gne_cells[i] = sCell;
+                }
+            }
+
+            for (int i = 0; i < deleteObjects.Count; i++)
+            {
+                if (!gne_cells.Remove(deleteObjects[i]))
+                {
+                    throw new Exception();
+                }
+            }
         }
 
         void efa_InstantiateList()
@@ -299,6 +388,7 @@ namespace Match3Example
                     Vector2i newIndex = new Vector2i(sCell.cIndex.X, sCell.cIndex.Y - efa_elementsFall[sCell.cIndex.X, sCell.cIndex.Y]);
 
                     Cell _cell = cells.cells[newIndex.X, newIndex.Y];
+                    _cell.transforms.position = cells.GetNewPositionByIndex(sCell.cIndex);
                     cells.cells[newIndex.X, newIndex.Y] = sCell.cCell;
                     cells.cells[sCell.cIndex.X, sCell.cIndex.Y] = _cell;
 

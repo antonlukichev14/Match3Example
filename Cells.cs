@@ -12,7 +12,7 @@ namespace Match3Example
     {
         public Cell[,] cells;
 
-        Element[] elements;
+        public Element[] elements;
 
         private Vector2 transormOffset;
 
