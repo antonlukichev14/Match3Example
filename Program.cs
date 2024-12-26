@@ -8,7 +8,7 @@ namespace Match3Example
         {
             using (Viewport viewport = new Viewport(1920, 1000, "Match3Example"))
             {
-                viewport.currentScene = new MainMenu(viewport);
+                viewport.SetCurrentScene(new MainMenu());
                 viewport.Run();
             }
         }

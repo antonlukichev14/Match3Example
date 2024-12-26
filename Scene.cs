@@ -16,9 +16,8 @@ namespace Match3Example
         public double deltaTime;
         public double currentTime;
 
-        public Scene(Viewport viewport, float mainCameraFOV) 
+        public Scene(float mainCameraFOV) 
         {
-            this.viewport = viewport;
             this.mainCameraFOV = mainCameraFOV;
         }
 

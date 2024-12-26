@@ -37,7 +37,7 @@ namespace Match3Example.Inputs
 
         public static Vector3 ScreenToCameraOrtWorldPosition(Camera camera, float z_posiiton)
         {
-            Vector3 mouseNDC = new Vector3(NormalizedMousePosition.X, NormalizedMousePosition.Y, z_posiiton);
+            Vector3 mouseNDC = new Vector3(NormalizedMousePosition.X, NormalizedMousePosition.Y, 0);
 
             Matrix4 invProjectionView = Matrix4.Invert(camera.projection * camera.view);
 
@@ -45,7 +45,7 @@ namespace Match3Example.Inputs
             Vector4 worldCoords = invProjectionView * clipCoords;
             worldCoords /= worldCoords.W;
 
-            Vector3 worldPosition = new Vector3(worldCoords.X, worldCoords.Y, worldCoords.Z);
+            Vector3 worldPosition = new Vector3(worldCoords.X, z_posiiton, worldCoords.Z);
             return worldPosition;
         }
     }

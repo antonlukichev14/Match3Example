@@ -30,7 +30,7 @@ namespace Match3Example.Scenes
 
         public GameState state = GameState.Interact;
 
-        public Game(Viewport viewport):base(viewport, 20f) 
+        public Game():base(20f) 
         {
             
         }

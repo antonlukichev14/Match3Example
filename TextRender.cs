@@ -11,13 +11,18 @@ namespace Match3Example
 {
     class TextRender
     {
+        private static string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZабвгдезийклмнопрстуфхцчшщъыьэюяАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ0123456789!@#$%^&*()-_=+[]{};:',.<>?/|`~";
+
         public static TextRender Instance;
         Dictionary<char, uint> charDictionary = new Dictionary<char, uint>();
 
         GlyphTexture[] glyphTextures;
         int VAO, VBO;
 
-        public TextRender(string pathToFont, string chars)
+        private float charDistance = 2f;
+        private float defaultScale = 0.01f;
+
+        public TextRender(string pathToFont)
         {
             Instance = this;
 
@@ -87,14 +92,79 @@ namespace Match3Example
             GL.ActiveTexture(0);
             GL.BindVertexArray(VAO);
 
+            scale *= defaultScale;
+
             for (int i = 0; i < text.Length; i++)
             {
                 try
                 {
-                    if (charDictionary.ContainsKey(text[i]))
+                    if(text[i] == ' ')
+                    {
+                        position.X += glyphTextures[0].Advance * scale + charDistance * scale;
+                    }
+                    else if (charDictionary.ContainsKey(text[i]))
                     {
                         RenderGlyph((int)charDictionary[text[i]], position, scale);
-                        position.X += glyphTextures[(int)charDictionary[text[i]]].Advance * scale;
+                        position.X += glyphTextures[(int)charDictionary[text[i]]].Advance * scale + charDistance * scale;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                }
+            }
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.BindVertexArray(0);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+        }
+
+        public void RenderAlignCenter(Shader shader, Camera camera, string text, Vector2 position, float scale, Vector3 color)
+        {
+            shader.Use();
+            camera.Use(shader);
+
+            shader.SetUniformVector3("textColor", color);
+            GL.ActiveTexture(0);
+            GL.BindVertexArray(VAO);
+
+            scale *= defaultScale;
+
+            float alignPos = 0;
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                try
+                {
+                    if (text[i] == ' ')
+                    {
+                        alignPos += glyphTextures[0].Advance * scale + charDistance * scale;
+                    }
+                    else if (charDictionary.ContainsKey(text[i]))
+                    {
+                        alignPos += glyphTextures[(int)charDictionary[text[i]]].Advance * scale + charDistance * scale;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                }
+            }
+
+            position.X -= alignPos / 2;
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                try
+                {
+                    if (text[i] == ' ')
+                    {
+                        position.X += glyphTextures[0].Advance * scale + charDistance * scale;
+                    }
+                    else if (charDictionary.ContainsKey(text[i]))
+                    {
+                        RenderGlyph((int)charDictionary[text[i]], position, scale);
+                        position.X += glyphTextures[(int)charDictionary[text[i]]].Advance * scale + charDistance * scale;
                     }
                 }
                 catch (Exception e)
