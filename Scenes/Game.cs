@@ -21,9 +21,9 @@ namespace Match3Example.Scenes
         GameLogic logic;
         GameRender render;
 
-        public RenderObject GameField;
+        public RenderObject GameFieldObject;
 
-        public Cells cells;
+        public GameField cells;
 
         public Vector2i hoverCell = new Vector2i(-1, -1);
         public Vector2i selectedCell = new Vector2i(-1, -1);
@@ -48,7 +48,7 @@ namespace Match3Example.Scenes
         {
             Texture gamefieldTexture = new Texture(Path.GetAssetPath("Textures/cell.png"), Vector2.One);
             Mesh gamefieldMesh = new Mesh(AssimpLoader.GetMeshFromFile(Path.GetAssetPath("Models/gamefield.obj")));
-            GameField = new RenderObject(gamefieldMesh, gamefieldTexture, new Transforms(new Vector3(0.0f, -1.0f, 0.0f)));
+            GameFieldObject = new RenderObject(gamefieldMesh, gamefieldTexture, new Transforms(new Vector3(0.0f, -1.0f, 0.0f)));
 
             Mesh quadMesh = new Mesh(AssimpLoader.GetMeshFromFile(Path.GetAssetPath("Models/quad.obj")));
 
@@ -72,7 +72,7 @@ namespace Match3Example.Scenes
 
             Random random = new Random();
 
-            cells = new Cells(new Vector2i(8, 8), new Vector2(-3.5f, -3.5f), elements);
+            cells = new GameField(new Vector2i(8, 8), new Vector2(-3.5f, -3.5f), elements);
         }
 
         public override void OnRenderFrame(FrameEventArgs args)

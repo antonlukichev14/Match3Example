@@ -47,7 +47,7 @@ namespace Match3Example.Scenes.GameBehavior
             defaultShader.Use();
             game.mainCamera.Use(defaultShader);
 
-            game.GameField.Render(defaultShader);
+            game.GameFieldObject.Render(defaultShader);
 
             for (int i = 0; i < 8; i++)
             {

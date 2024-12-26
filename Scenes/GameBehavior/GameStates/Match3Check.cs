@@ -22,7 +22,7 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
         public override void Update()
         {
             bool toSE = game.state == GameState.Match3CheckSE ? true : false;
-            Cells cells = game.cells;
+            GameField cells = game.cells;
 
             if (Match3.IsWithoutDelete(cells.cells))
             {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Match3Example
 {
-    class Cells
+    class GameField
     {
         public Cell[,] cells;
 
@@ -16,7 +16,7 @@ namespace Match3Example
 
         private Vector2 transormOffset;
 
-        public Cells(Vector2i cellsSize, Vector2 transormOffset, Element[] elements)
+        public GameField(Vector2i cellsSize, Vector2 transormOffset, Element[] elements)
         {
             this.transormOffset = transormOffset;
 
