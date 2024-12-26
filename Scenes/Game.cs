@@ -90,10 +90,5 @@ namespace Match3Example.Scenes
         {
             logic.OnMouseMove();
         }
-
-        public override void OnFramebufferResize(FramebufferResizeEventArgs e)
-        {
-            mainCamera.SetProjection();
-        }
     }
 }

@@ -34,6 +34,10 @@ namespace Match3Example
             currentTime += deltaTime;
         }
         public abstract void OnMouseMove(MouseMoveEventArgs e);
-        public abstract void OnFramebufferResize(FramebufferResizeEventArgs e);
+
+        public virtual void OnFramebufferResize(FramebufferResizeEventArgs e)
+        {
+            mainCamera.SetProjection();
+        }
     }
 }

@@ -35,9 +35,5 @@ namespace Match3Example.Scenes
 
             TextRender.Instance.Render(textShader, mainCamera, "Z wa shna ЛЕГО", Vector2.Zero, 0.01f, Vector3.Zero);
         }
-        public override void OnFramebufferResize(FramebufferResizeEventArgs e)
-        {
-            
-        }
     }
 }
