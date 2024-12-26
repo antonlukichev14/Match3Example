@@ -72,7 +72,9 @@ namespace Match3Example.Scenes
 
             Random random = new Random();
 
-            cells = new GameField(new Vector2i(8, 8), new Vector2(-3.5f, -3.5f), elements);
+            cells = new GameField(new Vector2i(8, 8), new Vector2(-3.5f, -3.5f), elements, new Collider2DAABB(4, -4, 4, -4));
+
+            mainCamera.position.X = 3;
         }
 
         public override void OnRenderFrame(FrameEventArgs args)

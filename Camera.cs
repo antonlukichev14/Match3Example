@@ -77,5 +77,15 @@ namespace Match3Example
             position += up * velocity.X * noclipSpeed * (float)cameraScene.deltaTime;
             position -= Vector3.Normalize(Vector3.Cross(front, up)) * noclipSpeed * velocity.Y * (float)cameraScene.deltaTime;
         }
+
+        public static Vector2 WorldToScreenPosition(Camera camera, Vector3 worldPosition)
+        {
+            Vector4 clipCoords = new Vector4(worldPosition, 1.0f) * camera.view * camera.projection;
+
+            Vector3 ndc = new Vector3(clipCoords.X / clipCoords.W, clipCoords.Y / clipCoords.W, clipCoords.Z / clipCoords.W);
+            Vector2 screenPosition = new Vector2((ndc.X + 1) / 2 * Viewport.Instance.ClientSize.X, (ndc.Y + 1) / 2 * Viewport.Instance.ClientSize.Y);
+
+            return screenPosition;
+        }
     }
 }

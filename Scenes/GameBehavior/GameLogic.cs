@@ -45,19 +45,26 @@ namespace Match3Example.Scenes.GameBehavior
 
         public void OnMouseMove()
         {
-            Vector3 mouseWorldPos = MouseInput.ScreenToCameraOrtWorldPosition(game.mainCamera, 1);
-            mouseWorldPos += new Vector3(4f, 0, 4f);
+            if(game.cells.collider.ScreenPointCollison(game.mainCamera, MouseInput.MousePosition))
+            {
+                Vector2 AABBpoint1 = game.cells.collider.GetScreenAABBpoint(game.mainCamera, 0);
+                Vector2 AABBpoint2 = game.cells.collider.GetScreenAABBpoint(game.mainCamera, 1);
 
-            if (mouseWorldPos.X > 0 && mouseWorldPos.X < 8 && mouseWorldPos.Z > 0 && mouseWorldPos.Z < 8)
-            {
-                game.hoverCell.X = (int)Math.Ceiling(mouseWorldPos.X) - 1;
-                game.hoverCell.Y = (int)Math.Ceiling(mouseWorldPos.Z) - 1;
+                float a = AABBpoint2.X - AABBpoint1.X;
+                float a8 = a / 8;
+
+                int aa = (int)Math.Floor((MouseInput.MousePosition.X - AABBpoint1.X) / a8);
+
+                float b = AABBpoint1.Y - AABBpoint2.Y;
+                float b8 = b / 8;
+
+                int bb = (int)Math.Floor((MouseInput.MousePosition.Y - AABBpoint2.Y) / b8);
+
+                game.hoverCell.X = 7 - aa;
+                game.hoverCell.Y = 7 - bb;
             }
-            else
-            {
-                game.hoverCell.X = -1;
-                game.hoverCell.Y = -1;
-            }
+
+            
         }
     }
 }

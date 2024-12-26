@@ -16,8 +16,11 @@ namespace Match3Example
 
         private Vector2 transormOffset;
 
-        public GameField(Vector2i cellsSize, Vector2 transormOffset, Element[] elements)
+        public Collider2DAABB collider;
+
+        public GameField(Vector2i cellsSize, Vector2 transormOffset, Element[] elements, Collider2DAABB collider)
         {
+            this.collider = collider;
             this.transormOffset = transormOffset;
 
             cells = new Cell[cellsSize.X, cellsSize.Y];

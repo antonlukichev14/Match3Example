@@ -21,8 +21,7 @@ namespace Match3Example.Scenes
         Texture buttonTexture;
         Texture buttonTextureHover;
 
-        Vector2 buttonColliderVertical;
-        Vector2 buttonColliderHorizontal;
+        Collider2DAABB buttonCollider;
 
         bool buttonHover = false;
 
@@ -43,8 +42,7 @@ namespace Match3Example.Scenes
             Vector2 buttonColliderPosition = new Vector2(0, 0.25f);
             Vector2 buttonColliderScale = new Vector2(4, 1.5f);
 
-            buttonColliderVertical = new Vector2(buttonColliderPosition.Y + buttonColliderScale.Y, buttonColliderPosition.Y - buttonColliderScale.Y);
-            buttonColliderHorizontal = new Vector2(buttonColliderPosition.X + buttonColliderScale.X, buttonColliderPosition.X - buttonColliderScale.X);
+            buttonCollider = new Collider2DAABB(buttonColliderPosition, buttonColliderScale);
 
             GL.Enable(EnableCap.Blend);
             GL.Enable(EnableCap.DepthTest);
@@ -53,9 +51,7 @@ namespace Match3Example.Scenes
 
         public override void OnMouseMove(MouseMoveEventArgs e)
         {
-            Vector3 mousePos = MouseInput.ScreenToCameraOrtWorldPosition(mainCamera, 0);
-
-            if (mousePos.X < buttonColliderHorizontal.X && mousePos.X > buttonColliderHorizontal.Y && mousePos.Z < buttonColliderVertical.X && mousePos.Z > buttonColliderVertical.Y)
+            if (buttonCollider.ScreenPointCollison(mainCamera, MouseInput.MousePosition))
             {
                 ButtonObject.texture = buttonTextureHover;
                 buttonHover = true;
