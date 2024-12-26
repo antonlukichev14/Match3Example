@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using Match3Example.Scenes;
+using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace Match3Example
 {
     internal class Camera
     {
+        private Scene cameraScene;
+
         private Matrix4 _projection;
         private float _fov;
 
@@ -16,8 +19,9 @@ namespace Match3Example
         private Vector3 front = new Vector3(0.0f, -1.0f, 0.0f);
         private Vector3 up = new Vector3(0.0f, 0.0f, 1.0f);
 
-        public Camera(float fov)
+        public Camera(Scene scene, float fov)
         {
+            cameraScene = scene;
             this.fov = fov;
         }
 
@@ -50,7 +54,7 @@ namespace Match3Example
 
         public void SetProjection()
         {
-            Vector2 clientSize = new Vector2((float)Game.instance.ClientSize.X, (float)Game.instance.ClientSize.Y);
+            Vector2 clientSize = new Vector2((float)Viewport.Instance.ClientSize.X, (float)Viewport.Instance.ClientSize.Y);
             clientSize.Normalize();
             _projection = Matrix4.CreateOrthographic((float)clientSize.X * fov, (float)clientSize.Y * fov, -50f, 50.0f);
         }
@@ -70,8 +74,8 @@ namespace Match3Example
 
         public void Move(Vector2 velocity)
         {
-            position += up * velocity.X * noclipSpeed * (float)Game.instance.deltaTime;
-            position -= Vector3.Normalize(Vector3.Cross(front, up)) * noclipSpeed * velocity.Y * (float)Game.instance.deltaTime;
+            position += up * velocity.X * noclipSpeed * (float)cameraScene.deltaTime;
+            position -= Vector3.Normalize(Vector3.Cross(front, up)) * noclipSpeed * velocity.Y * (float)cameraScene.deltaTime;
         }
     }
 }

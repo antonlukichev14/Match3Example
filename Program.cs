@@ -1,12 +1,15 @@
-﻿namespace Match3Example
+﻿using Match3Example.Scenes;
+
+namespace Match3Example
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            using (Game game = new Game(1920, 1000, "Match3Example"))
+            using (Viewport viewport = new Viewport(1920, 1000, "Match3Example"))
             {
-                game.Run();
+                viewport.currentScene = new Game(viewport);
+                viewport.Run();
             }
         }
     }
