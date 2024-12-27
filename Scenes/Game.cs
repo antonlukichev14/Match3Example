@@ -30,6 +30,9 @@ namespace Match3Example.Scenes
 
         public GameState state = GameState.Interact;
 
+        public double timer = 60;
+        public int score = 0;
+
         public Game():base(20f) 
         {
             

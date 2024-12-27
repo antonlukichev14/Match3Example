@@ -41,6 +41,12 @@ namespace Match3Example.Scenes.GameBehavior
         public void OnUpdate()
         {
             gameStates[(int)game.state].Update();
+
+            if (game.state == GameState.Interact)
+                game.timer -= (float)game.deltaTime;
+
+            if (game.timer <= 0)
+                Viewport.Instance.SetCurrentScene(new EndScene());
         }
 
         public void OnMouseMove()

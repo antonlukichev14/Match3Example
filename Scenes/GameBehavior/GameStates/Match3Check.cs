@@ -55,6 +55,7 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
                     if (deleteCells[i, j])
                     {
                         cells.cells[i, j].element = null;
+                        game.score++;
                     }
                 }
             }
