@@ -8,7 +8,7 @@ using OpenTK.Mathematics;
 using static System.Formats.Asn1.AsnWriter;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace OpenTK_Test_Lighting_01
+namespace Match3Example.Render
 {
     static class AssimpLoader
     {
@@ -16,8 +16,8 @@ namespace OpenTK_Test_Lighting_01
         {
             List<float> mesh = new List<float>();
 
-            Assimp.AssimpContext context = new Assimp.AssimpContext();
-            Scene scene = context.ImportFile(filepath, PostProcessSteps.FlipUVs | PostProcessSteps.Triangulate);
+            AssimpContext context = new AssimpContext();
+            Assimp.Scene scene = context.ImportFile(filepath, PostProcessSteps.FlipUVs | PostProcessSteps.Triangulate);
 
             Vector3D[] vertices = Array.Empty<Vector3D>();
             Vector3D[] normals = Array.Empty<Vector3D>();

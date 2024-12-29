@@ -1,9 +1,10 @@
 ﻿using OpenTK.Windowing.Common;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using OpenTK_Test_Lighting_01;
 using Match3Example.Inputs;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using Match3Example.Render;
+using Match3Example.Render.Text;
 
 namespace Match3Example.Scenes
 {
@@ -16,7 +17,7 @@ namespace Match3Example.Scenes
         Texture buttonTexture;
         Texture buttonTextureHover;
 
-        Collider2DAABB buttonCollider;
+        UserInterfaceCollider buttonCollider;
 
         bool buttonHover = false;
 
@@ -37,7 +38,7 @@ namespace Match3Example.Scenes
             Vector2 buttonColliderPosition = new Vector2(0, 0.25f);
             Vector2 buttonColliderScale = new Vector2(4, 1.5f);
 
-            buttonCollider = new Collider2DAABB(buttonColliderPosition, buttonColliderScale);
+            buttonCollider = new UserInterfaceCollider(buttonColliderPosition, buttonColliderScale);
 
             GL.Enable(EnableCap.Blend);
             GL.Enable(EnableCap.DepthTest);
@@ -58,7 +59,7 @@ namespace Match3Example.Scenes
             }
         }
 
-        Text.TextRenderSettings centerText = new Text.TextRenderSettings(Text.TextRenderAlign.Center);
+        TextRenderSettings centerText = new TextRenderSettings(TextRenderAlign.Center);
         public override void OnRenderFrame(FrameEventArgs args)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -76,7 +77,7 @@ namespace Match3Example.Scenes
 
             if (buttonHover && MouseInput.state.IsButtonPressed(MouseButton.Left))
             {
-                Viewport.Instance.SetCurrentScene(new Game());
+                Viewport.Instance.SetCurrentScene(new GameScene());
             }
         }
     }

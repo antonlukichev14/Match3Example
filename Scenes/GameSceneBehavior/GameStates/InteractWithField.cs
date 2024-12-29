@@ -11,10 +11,10 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
 {
     class InteractWithField : GameStateLogic
     {
-        private Game game;
+        private GameScene game;
         private SwitchElements switchElements;
 
-        public InteractWithField(Game game, SwitchElements switchElements)
+        public InteractWithField(GameScene game, SwitchElements switchElements)
         {
             this.game = game;
             this.switchElements = switchElements;

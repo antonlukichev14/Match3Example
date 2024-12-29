@@ -1,4 +1,6 @@
-﻿using OpenTK.Mathematics;
+﻿using Match3Example.Inputs;
+using Match3Example.Scenes.GameSceneBehavior;
+using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Match3Example
+namespace Match3Example.GameObjects
 {
     class GameField
     {
@@ -16,9 +18,9 @@ namespace Match3Example
 
         private Vector2 transormOffset;
 
-        public Collider2DAABB collider;
+        public UserInterfaceCollider collider;
 
-        public GameField(Vector2i cellsSize, Vector2 transormOffset, Element[] elements, Collider2DAABB collider)
+        public GameField(Vector2i cellsSize, Vector2 transormOffset, Element[] elements, UserInterfaceCollider collider)
         {
             this.collider = collider;
             this.transormOffset = transormOffset;
@@ -63,7 +65,7 @@ namespace Match3Example
 
         public void ConsolePrintIndex()
         {
-            for(int i = cells.GetLength(1) - 1; i > -1; i--)
+            for (int i = cells.GetLength(1) - 1; i > -1; i--)
             {
                 for (int j = cells.GetLength(0) - 1; j > -1; j--)
                 {
@@ -75,7 +77,7 @@ namespace Match3Example
 
         public void ApplyCellsByIndex(int[,] cellsByIndex)
         {
-            for(int i = 0; i < cells.GetLength(0); i++)
+            for (int i = 0; i < cells.GetLength(0); i++)
             {
                 for (int j = 0; j < cells.GetLength(1); j++)
                 {

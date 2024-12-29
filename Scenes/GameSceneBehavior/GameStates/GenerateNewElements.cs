@@ -1,4 +1,6 @@
-﻿using OpenTK.Mathematics;
+﻿using Match3Example.GameObjects;
+using Match3Example.Scenes.GameSceneBehavior;
+using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +11,13 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
 {
     class GenerateNewElements : GameStateLogic
     {
-        private Game game;
+        private GameScene game;
 
         public float graviteSpeed;
 
         List<(Cell cCell, Vector2i cIndex, float floorPos, float gValue)> gne_cells;
 
-        public GenerateNewElements(Game game, float graviteSpeed)
+        public GenerateNewElements(GameScene game, float graviteSpeed)
         {
             this.game = game;
             this.graviteSpeed = graviteSpeed;

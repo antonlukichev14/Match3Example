@@ -1,4 +1,6 @@
-﻿using OpenTK.Mathematics;
+﻿using Match3Example.GameObjects;
+using Match3Example.Scenes.GameSceneBehavior;
+using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +11,14 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
 {
     internal class ElementsFall : GameStateLogic
     {
-        private Game game;
+        private GameScene game;
 
         public float graviteSpeed;
 
         int[,] elementsFall;
         List<(Cell cCell, Vector2i cIndex, float floorPos, float gValue)> cells;
 
-        public ElementsFall(Game game, float graviteSpeed)
+        public ElementsFall(GameScene game, float graviteSpeed)
         {
             this.game = game;
             this.graviteSpeed = graviteSpeed;

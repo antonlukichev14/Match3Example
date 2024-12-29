@@ -3,7 +3,6 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using OpenTK_Test_Lighting_01;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +12,12 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 
 using Match3Example.Scenes.GameBehavior;
+using Match3Example.Render;
+using Match3Example.GameObjects;
 
 namespace Match3Example.Scenes
 {
-    class Game : Scene
+    class GameScene : Scene
     {
         GameLogic logic;
         GameRender render;
@@ -33,7 +34,7 @@ namespace Match3Example.Scenes
         public double timer = 60;
         public int score = 0;
 
-        public Game() : base(20f) { }
+        public GameScene() : base(20f) { }
 
         public override void OnLoad()
         {
@@ -63,7 +64,7 @@ namespace Match3Example.Scenes
 
             Random random = new Random();
 
-            GameField = new GameField(new Vector2i(8, 8), new Vector2(-3.5f, -3.5f), elements, new Collider2DAABB(4, -4, 4, -4));
+            GameField = new GameField(new Vector2i(8, 8), new Vector2(-3.5f, -3.5f), elements, new Inputs.UserInterfaceCollider(4, -4, 4, -4));
 
             mainCamera.position.X = 3;
         }

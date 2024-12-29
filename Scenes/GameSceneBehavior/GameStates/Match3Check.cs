@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Match3Example.GameObjects;
+using Match3Example.Scenes.GameSceneBehavior;
 
 namespace Match3Example.Scenes.GameBehavior.GameStates
 {
     class Match3Check : GameStateLogic
     {
-        private Game game;
+        private GameScene game;
         private ElementsFall ef;
         private GenerateNewElements gne;
 
-        public Match3Check(Game game, ElementsFall ef, GenerateNewElements gne) 
+        public Match3Check(GameScene game, ElementsFall ef, GenerateNewElements gne) 
         {
             this.game = game;
             this.ef = ef;

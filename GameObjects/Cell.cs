@@ -4,15 +4,16 @@ using System.Linq;
 using OpenTK.Mathematics;
 using System.Text;
 using System.Threading.Tasks;
+using Match3Example.Render;
 
-namespace Match3Example
+namespace Match3Example.GameObjects
 {
     internal class Cell
     {
         public Element element = null;
         public Transforms transforms;
 
-        public Cell(Vector3 position) 
+        public Cell(Vector3 position)
         {
             transforms = new Transforms(position, Vector3.Zero, Vector3.One * 0.7f);
         }

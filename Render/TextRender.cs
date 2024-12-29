@@ -1,9 +1,9 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL4;
 using SharpFont;
-using Match3Example.Text;
+using Match3Example.Render.Text;
 
-namespace Match3Example
+namespace Match3Example.Render
 {
     class TextRender
     {
@@ -184,7 +184,7 @@ namespace Match3Example
             float h = ch.Size.Y * scale;
 
             float[,] vertices = new float[6, 4] {
-                { xpos,     ypos + h,   0.0f, 0.0f },            
+                { xpos,     ypos + h,   0.0f, 0.0f },
             { xpos,     ypos,       0.0f, 1.0f },
             { xpos + w, ypos,       1.0f, 1.0f },
 
@@ -203,7 +203,7 @@ namespace Match3Example
     }
 }
 
-namespace Match3Example.Text
+namespace Match3Example.Render.Text
 {
     public struct GlyphTexture
     {
@@ -219,7 +219,7 @@ namespace Match3Example.Text
 
         public TextRenderSettings(TextRenderAlign align)
         {
-            this.align = align; 
+            this.align = align;
         }
     }
 

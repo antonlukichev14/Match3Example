@@ -1,4 +1,5 @@
-﻿using Match3Example.Scenes;
+﻿using Match3Example.Render;
+using Match3Example.Scenes;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;

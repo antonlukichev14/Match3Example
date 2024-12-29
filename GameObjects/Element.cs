@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Match3Example.Render;
 
-namespace Match3Example
+namespace Match3Example.GameObjects
 {
     internal class Element
     {
         private static int _elementsCount = 0;
-        public static int elementsCount {  get { return _elementsCount; } }
+        public static int elementsCount { get { return _elementsCount; } }
 
         public int ID;
         public Texture texture;

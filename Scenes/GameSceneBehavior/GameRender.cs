@@ -7,12 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Windowing.Common;
 using Assimp;
+using Match3Example.Render;
 
 namespace Match3Example.Scenes.GameBehavior
 {
     class GameRender
     {
-        private Game game;
+        private GameScene game;
         public Vector4 clearColor = new Vector4(194f / 255f, 153f / 255f, 121f / 255f, 1.0f);
 
         Shader defaultShader;
@@ -20,7 +21,7 @@ namespace Match3Example.Scenes.GameBehavior
         Shader selectedShader;
         Shader textShader;
 
-        public GameRender(Game game)
+        public GameRender(GameScene game)
         {
             this.game = game;
             SetRenderingParameters();

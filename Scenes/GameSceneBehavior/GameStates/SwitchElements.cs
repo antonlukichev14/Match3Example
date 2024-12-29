@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using Match3Example.GameObjects;
+using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
 {
     class SwitchElements : GameStateLogic
     {
-        Game game;
+        GameScene game;
 
         private static double time;
         private static Vector2i cell1;
@@ -21,7 +22,7 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
 
         private static Cell[,] cells;
 
-        public SwitchElements(Game game, float animationSpeed)
+        public SwitchElements(GameScene game, float animationSpeed)
         {
             cells = game.GameField.cells;
             this.game = game;

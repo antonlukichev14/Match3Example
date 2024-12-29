@@ -1,5 +1,4 @@
 ﻿using Assimp;
-using Match3Example.Inputs;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
@@ -7,20 +6,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Match3Example
+namespace Match3Example.Inputs
 {
-    internal class Collider2DAABB
+    internal class UserInterfaceCollider
     {
         public Vector2 ColliderVertical;
         public Vector2 ColliderHorizontal;
 
-        public Collider2DAABB(Vector2 ColliderPosition, Vector2 ColliderScale) 
+        public UserInterfaceCollider(Vector2 ColliderPosition, Vector2 ColliderScale)
         {
             ColliderVertical = new Vector2(ColliderPosition.Y + ColliderScale.Y, ColliderPosition.Y - ColliderScale.Y);
             ColliderHorizontal = new Vector2(ColliderPosition.X + ColliderScale.X, ColliderPosition.X - ColliderScale.X);
         }
 
-        public Collider2DAABB(float up, float down, float left, float right)
+        public UserInterfaceCollider(float up, float down, float left, float right)
         {
             ColliderVertical.X = up;
             ColliderVertical.Y = down;

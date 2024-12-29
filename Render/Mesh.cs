@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace Match3Example
+namespace Match3Example.Render
 {
     internal class Mesh
     {

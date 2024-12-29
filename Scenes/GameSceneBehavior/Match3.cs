@@ -1,11 +1,12 @@
-﻿using OpenTK.Mathematics;
+﻿using Match3Example.GameObjects;
+using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Match3Example
+namespace Match3Example.Scenes.GameSceneBehavior
 {
     static class Match3
     {
@@ -169,7 +170,7 @@ namespace Match3Example
                         }
 
                         cellNotEmpty[i, mincell] = true;
-                        elementsFall[i, j] = (j - mincell);
+                        elementsFall[i, j] = j - mincell;
                     }
                 }
             }
@@ -187,9 +188,9 @@ namespace Match3Example
             bool status = false;
             bool[,] empty = new bool[cells.GetLength(0), cells.GetLength(1)];
 
-            for(int i = 0; i < cells.GetLength(0); i++)
+            for (int i = 0; i < cells.GetLength(0); i++)
             {
-                for(int j = 0; j < cells.GetLength(1); j++)
+                for (int j = 0; j < cells.GetLength(1); j++)
                 {
                     if (cells[i, j] == -1)
                     {

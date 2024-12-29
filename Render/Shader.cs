@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Match3Example
+namespace Match3Example.Render
 {
     internal class Shader
     {

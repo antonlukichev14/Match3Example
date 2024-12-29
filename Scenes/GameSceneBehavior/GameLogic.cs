@@ -12,11 +12,11 @@ namespace Match3Example.Scenes.GameBehavior
 {
     class GameLogic
     {
-        private Game game;
+        private GameScene game;
 
         private GameStateLogic[] gameStates;
 
-        public GameLogic(Game game) 
+        public GameLogic(GameScene game) 
         {
             this.game = game;
 
