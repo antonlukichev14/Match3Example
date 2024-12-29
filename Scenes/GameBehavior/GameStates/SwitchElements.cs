@@ -23,7 +23,7 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
 
         public SwitchElements(Game game, float animationSpeed)
         {
-            cells = game.cells.cells;
+            cells = game.GameField.cells;
             this.game = game;
             this.animationSpeed = animationSpeed;
         }

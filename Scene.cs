@@ -1,20 +1,14 @@
 ﻿using OpenTK.Windowing.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Match3Example
 {
     abstract class Scene
     {
-        private Viewport viewport;
         public Camera mainCamera { get; set; }
         private float mainCameraFOV;
 
-        public double deltaTime;
-        public double currentTime;
+        public double deltaTime; //Время между кадрами. Time between frames
+        public double currentTime; //Общее время. Total time
 
         public Scene(float mainCameraFOV) 
         {
@@ -27,11 +21,13 @@ namespace Match3Example
         }
 
         public abstract void OnRenderFrame(FrameEventArgs args);
+        
         public virtual void OnUpdateFrame(FrameEventArgs args)
         {
             deltaTime = args.Time;
             currentTime += deltaTime;
         }
+        
         public abstract void OnMouseMove(MouseMoveEventArgs e);
 
         public virtual void OnFramebufferResize(FramebufferResizeEventArgs e)

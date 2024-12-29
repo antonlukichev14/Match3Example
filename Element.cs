@@ -28,5 +28,10 @@ namespace Match3Example
             texture.Use(shader);
             mesh.Render(shader, transforms);
         }
+
+        public static void ResetElementsCount()
+        {
+            _elementsCount = 0;
+        }
     }
 }

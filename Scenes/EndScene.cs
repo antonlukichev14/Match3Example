@@ -62,6 +62,7 @@ namespace Match3Example.Scenes
             }
         }
 
+        Text.TextRenderSettings centerText = new Text.TextRenderSettings(Text.TextRenderAlign.Center);
         public override void OnRenderFrame(FrameEventArgs args)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -70,8 +71,8 @@ namespace Match3Example.Scenes
             mainCamera.Use(defaultShader);
 
             ButtonObject.Render(defaultShader);
-            TextRender.Instance.RenderAlignCenter(textShader, mainCamera, "GAME OVER", new Vector2(0, 3f), 2f, Vector3.One);
-            TextRender.Instance.RenderAlignCenter(textShader, mainCamera, "OK", new Vector2(0, -1f), 2f, Vector3.One);
+            TextRender.Instance.Render(textShader, mainCamera, "GAME OVER", new Vector2(0, 3f), 2f, Vector3.One, centerText);
+            TextRender.Instance.Render(textShader, mainCamera, "OK", new Vector2(0, -1f), 2f, Vector3.One, centerText);
         }
 
         public override void OnUpdateFrame(FrameEventArgs args)

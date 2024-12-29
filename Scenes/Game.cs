@@ -23,7 +23,7 @@ namespace Match3Example.Scenes
 
         public RenderObject GameFieldObject;
 
-        public GameField cells;
+        public GameField GameField;
 
         public Vector2i hoverCell = new Vector2i(-1, -1);
         public Vector2i selectedCell = new Vector2i(-1, -1);
@@ -33,10 +33,7 @@ namespace Match3Example.Scenes
         public double timer = 60;
         public int score = 0;
 
-        public Game():base(20f) 
-        {
-            
-        }
+        public Game() : base(20f) { }
 
         public override void OnLoad()
         {
@@ -55,27 +52,18 @@ namespace Match3Example.Scenes
 
             Mesh quadMesh = new Mesh(AssimpLoader.GetMeshFromFile(Path.GetAssetPath("Models/quad.obj")));
 
-            Texture element1Texture = new Texture(Path.GetAssetPath("Textures/element1.png"), Vector2.One);
-            element1Texture.SetTextureWrapping((int)TextureWrapMode.ClampToEdge);
-            Texture element2Texture = new Texture(Path.GetAssetPath("Textures/element2.png"), Vector2.One);
-            element2Texture.SetTextureWrapping((int)TextureWrapMode.ClampToEdge);
-            Texture element3Texture = new Texture(Path.GetAssetPath("Textures/element3.png"), Vector2.One);
-            element3Texture.SetTextureWrapping((int)TextureWrapMode.ClampToEdge);
-            Texture element4Texture = new Texture(Path.GetAssetPath("Textures/element4.png"), Vector2.One);
-            element4Texture.SetTextureWrapping((int)TextureWrapMode.ClampToEdge);
-            Texture element5Texture = new Texture(Path.GetAssetPath("Textures/element5.png"), Vector2.One);
-            element5Texture.SetTextureWrapping((int)TextureWrapMode.ClampToEdge);
-
-            Element[] elements = new Element[5];
-            elements[0] = new Element(quadMesh, element1Texture);
-            elements[1] = new Element(quadMesh, element2Texture);
-            elements[2] = new Element(quadMesh, element3Texture);
-            elements[3] = new Element(quadMesh, element4Texture);
-            elements[4] = new Element(quadMesh, element5Texture);
+            Element.ResetElementsCount();
+            int elementCount = 5;
+            Element[] elements = new Element[elementCount];
+            for(int i = 0; i < elementCount; i++)
+            {
+                Texture elementTexture = new Texture(Path.GetAssetPath($"Textures/element{i + 1}.png"), Vector2.One, (int)TextureWrapMode.ClampToEdge);
+                elements[i] = new Element(quadMesh, elementTexture);
+            }
 
             Random random = new Random();
 
-            cells = new GameField(new Vector2i(8, 8), new Vector2(-3.5f, -3.5f), elements, new Collider2DAABB(4, -4, 4, -4));
+            GameField = new GameField(new Vector2i(8, 8), new Vector2(-3.5f, -3.5f), elements, new Collider2DAABB(4, -4, 4, -4));
 
             mainCamera.position.X = 3;
         }

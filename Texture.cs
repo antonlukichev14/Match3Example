@@ -12,7 +12,6 @@ namespace Match3Example
     internal class Texture
     {
         public int Handle;
-
         public Vector2 tiling;
 
         public Texture(string path, Vector2 tiling)
@@ -35,6 +34,11 @@ namespace Match3Example
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
             GL.BindTexture(TextureTarget.Texture2D, 0);
+        }
+
+        public Texture(string path, Vector2 tiling, int WrapMode) : this(path, tiling)
+        {
+            SetTextureWrapping(WrapMode);
         }
 
         public void SetTextureWrapping(int WrapMode)

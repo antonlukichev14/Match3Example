@@ -78,8 +78,8 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
                 {
                     if (gne_empty[i, j])
                     {
-                        game.cells.cells[i, j].transforms.position.Z = game.cells.GetNewPositionByIndex(new Vector2i(i, j + gne_empty.GetLength(1) + 2 - minY)).Z;
-                        gne_cells.Add((game.cells.cells[i, j], new Vector2i(i, j), game.cells.GetNewPositionByIndex(new Vector2i(i, j)).Z, 0));
+                        game.GameField.cells[i, j].transforms.position.Z = game.GameField.GetNewPositionByIndex(new Vector2i(i, j + gne_empty.GetLength(1) + 2 - minY)).Z;
+                        gne_cells.Add((game.GameField.cells[i, j], new Vector2i(i, j), game.GameField.GetNewPositionByIndex(new Vector2i(i, j)).Z, 0));
                     }
                 }
             }
@@ -87,7 +87,7 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
             Console.WriteLine(minY);
             game.state = GameState.Interact;
 
-            int[,] newcells = new int[game.cells.cells.GetLength(0), game.cells.cells.GetLength(1)];
+            int[,] newcells = new int[game.GameField.cells.GetLength(0), game.GameField.cells.GetLength(1)];
 
             for (int i = 0; i < newcells.GetLength(0); i++)
             {
@@ -97,14 +97,14 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
                 }
             }
 
-            newcells = Match3.MaskRandomize(newcells, gne_empty, 0, game.cells.elements.Length);
+            newcells = Match3.MaskRandomize(newcells, gne_empty, 0, game.GameField.elements.Length);
 
             for (int i = 0; i < newcells.GetLength(0); i++)
             {
                 for (int j = 0; j < newcells.GetLength(1); j++)
                 {
                     if (newcells[i, j] != -1)
-                        game.cells.cells[i, j].element = game.cells.elements[newcells[i, j]];
+                        game.GameField.cells[i, j].element = game.GameField.elements[newcells[i, j]];
                 }
             }
         }

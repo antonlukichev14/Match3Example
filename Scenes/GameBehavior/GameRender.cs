@@ -59,7 +59,7 @@ namespace Match3Example.Scenes.GameBehavior
                     {
                         selectedShader.Use();
                         game.mainCamera.Use(selectedShader);
-                        game.cells.cells[i, j].Render(selectedShader);
+                        game.GameField.cells[i, j].Render(selectedShader);
                         defaultShader.Use();
                     }
                     else if (game.state == GameState.Interact && game.hoverCell.X == i && game.hoverCell.Y == j)
@@ -67,12 +67,12 @@ namespace Match3Example.Scenes.GameBehavior
                         hoverShader.Use();
                         game.mainCamera.Use(hoverShader);
                         hoverShader.SetUniformFloat("time", (float)game.currentTime);
-                        game.cells.cells[i, j].Render(hoverShader);
+                        game.GameField.cells[i, j].Render(hoverShader);
                         defaultShader.Use();
                     }
                     else
                     {
-                        game.cells.cells[i, j].Render(defaultShader);
+                        game.GameField.cells[i, j].Render(defaultShader);
                     }
                 }
             }

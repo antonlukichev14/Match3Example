@@ -1,11 +1,6 @@
 ﻿using OpenTK.Windowing.Common;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenTK_Test_Lighting_01;
 using Match3Example.Inputs;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -29,7 +24,7 @@ namespace Match3Example.Scenes
         {
             GL.ClearColor(194f / 255f, 153f / 255f, 121f / 255f, 1.0f);
 
-            TextRender textRender = new TextRender(Path.GetAssetPath("Fonts/Impact.ttf"));
+            TextRender textRender = new TextRender(Path.GetAssetPath("Fonts/Impact.ttf"), 2f);
             textShader = new Shader(Path.GetAssetPath("Shaders/Text.vert"), Path.GetAssetPath("Shaders/Text.frag"));
 
             defaultShader = new Shader(Path.GetAssetPath("Shaders/Default.vert"), Path.GetAssetPath("Shaders/Default.frag"));
@@ -63,6 +58,7 @@ namespace Match3Example.Scenes
             }
         }
 
+        Text.TextRenderSettings centerText = new Text.TextRenderSettings(Text.TextRenderAlign.Center);
         public override void OnRenderFrame(FrameEventArgs args)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -71,7 +67,7 @@ namespace Match3Example.Scenes
             mainCamera.Use(defaultShader);
 
             ButtonObject.Render(defaultShader);
-            TextRender.Instance.RenderAlignCenter(textShader, mainCamera, "PLAY", new Vector2(0, -1f), 2f, Vector3.One);
+            TextRender.Instance.Render(textShader, mainCamera, "PLAY", new Vector2(0, -1f), 2f, Vector3.One, centerText);
         }
 
         public override void OnUpdateFrame(FrameEventArgs args)

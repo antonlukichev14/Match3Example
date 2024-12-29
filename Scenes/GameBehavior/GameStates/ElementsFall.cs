@@ -42,10 +42,10 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
                     sCell.cCell.transforms.position.Z = sCell.floorPos;
                     Vector2i newIndex = new Vector2i(sCell.cIndex.X, sCell.cIndex.Y - elementsFall[sCell.cIndex.X, sCell.cIndex.Y]);
 
-                    Cell _cell = game.cells.cells[newIndex.X, newIndex.Y];
-                    _cell.transforms.position = game.cells.GetNewPositionByIndex(sCell.cIndex);
-                    game.cells.cells[newIndex.X, newIndex.Y] = sCell.cCell;
-                    game.cells.cells[sCell.cIndex.X, sCell.cIndex.Y] = _cell;
+                    Cell _cell = game.GameField.cells[newIndex.X, newIndex.Y];
+                    _cell.transforms.position = game.GameField.GetNewPositionByIndex(sCell.cIndex);
+                    game.GameField.cells[newIndex.X, newIndex.Y] = sCell.cCell;
+                    game.GameField.cells[sCell.cIndex.X, sCell.cIndex.Y] = _cell;
 
                     cells[i] = sCell;
                     deleteObjects.Add(sCell);
@@ -68,7 +68,7 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
 
         public void Start()
         {
-            elementsFall = Match3.ElementsFall(game.cells.cells);
+            elementsFall = Match3.ElementsFall(game.GameField.cells);
             InstantiateList();
         }
 
@@ -82,9 +82,9 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
                 {
                     if (elementsFall[i, j] != 0)
                     {
-                        Cell cCell = game.cells.cells[i, j];
+                        Cell cCell = game.GameField.cells[i, j];
                         Vector2i cIndex = new Vector2i(i, j);
-                        float floorPos = game.cells.GetNewPositionByIndex(new Vector2i(cIndex.X, cIndex.Y - elementsFall[cIndex.X, cIndex.Y])).Z;
+                        float floorPos = game.GameField.GetNewPositionByIndex(new Vector2i(cIndex.X, cIndex.Y - elementsFall[cIndex.X, cIndex.Y])).Z;
                         cells.Add((cCell, cIndex, floorPos, 0));
                     }
                 }

@@ -1,30 +1,38 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL4;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpFont;
+using Match3Example.Text;
 
 namespace Match3Example
 {
     class TextRender
     {
+        //Все используемые символы в рендере. Необходимо указать минимум символов для экономии памяти и вычислительной мощности
+        //All used characters in the render. It is necessary to specify a minimum number of characters to save memory and computational power
         private static string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZабвгдезийклмнопрстуфхцчшщъыьэюяАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ0123456789!@#$%^&*()-_=+[]{};:',.<>?/|`~";
 
+        //Глобальная ссылка на единственный экземпляр класса
+        //Global reference to the single instance of the class
         public static TextRender Instance;
+
+        //Массив всех загруженных текстур символов
+        //Array of all loaded glyph textures
+        GlyphTexture[] glyphTextures;
+
+        //Словарь, который хранит информация о том, какому символу (char) соответствует текстура в glyphTextures
+        //Dictionary that stores information about which character (char) corresponds to the texture in glyphTextures
         Dictionary<char, uint> charDictionary = new Dictionary<char, uint>();
 
-        GlyphTexture[] glyphTextures;
         int VAO, VBO;
 
         private float charDistance = 2f;
         private float defaultScale = 0.01f;
 
-        public TextRender(string pathToFont)
+        public TextRender(string pathToFont, float charDistance)
         {
             Instance = this;
+
+            this.charDistance = charDistance;
 
             Library library = new Library();
             Face face = new Face(library, pathToFont);
@@ -35,29 +43,7 @@ namespace Match3Example
 
             for (uint i = 0; i < chars.Length; i++)
             {
-                uint cCi = face.GetCharIndex(chars[(int)i]);
-                charDictionary.Add(chars[(int)i], i);
-
-                face.LoadChar(chars[(int)i], LoadFlags.Default, LoadTarget.Normal);
-                face.Glyph.RenderGlyph(RenderMode.Normal);
-                byte[] a = face.Glyph.Bitmap.BufferData;
-
-                int texture = GL.GenTexture();
-                GL.BindTexture(TextureTarget.Texture2D, texture);
-
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.R8, face.Glyph.Bitmap.Width, face.Glyph.Bitmap.Rows, 0, PixelFormat.Red, PixelType.UnsignedByte, a);
-
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (float)TextureWrapMode.ClampToEdge);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (float)TextureWrapMode.ClampToEdge);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (float)TextureMinFilter.Linear);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (float)TextureMinFilter.Linear);
-
-                GlyphTexture glyphTexture = new GlyphTexture();
-                glyphTexture.TextureID = texture;
-                glyphTexture.Size = new Vector2(face.Glyph.Bitmap.Width, face.Glyph.Bitmap.Rows);
-                glyphTexture.Bearing = new Vector2(face.Glyph.BitmapLeft, face.Glyph.BitmapTop);
-                glyphTexture.Advance = (int)face.Glyph.Advance.X;
-
+                GlyphTexture glyphTexture = LoadGlyphTexture(face, i);
                 glyphTexturesList.Add(glyphTexture);
             }
 
@@ -69,7 +55,34 @@ namespace Match3Example
             InstanceVertexBufferData();
         }
 
-        public void InstanceVertexBufferData()
+        private GlyphTexture LoadGlyphTexture(Face face, uint index)
+        {
+            uint cCi = face.GetCharIndex(chars[(int)index]);
+            charDictionary.Add(chars[(int)index], index);
+
+            face.LoadChar(chars[(int)index], LoadFlags.Default, LoadTarget.Normal);
+            face.Glyph.RenderGlyph(RenderMode.Normal);
+            byte[] a = face.Glyph.Bitmap.BufferData;
+
+            int texture = GL.GenTexture();
+            GL.BindTexture(TextureTarget.Texture2D, texture);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.R8, face.Glyph.Bitmap.Width, face.Glyph.Bitmap.Rows, 0, PixelFormat.Red, PixelType.UnsignedByte, a);
+
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (float)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (float)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (float)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (float)TextureMinFilter.Linear);
+
+            GlyphTexture glyphTexture = new GlyphTexture();
+            glyphTexture.TextureID = texture;
+            glyphTexture.Size = new Vector2(face.Glyph.Bitmap.Width, face.Glyph.Bitmap.Rows);
+            glyphTexture.Bearing = new Vector2(face.Glyph.BitmapLeft, face.Glyph.BitmapTop);
+            glyphTexture.Advance = (int)face.Glyph.Advance.X;
+
+            return glyphTexture;
+        }
+
+        private void InstanceVertexBufferData()
         {
             VAO = GL.GenVertexArray();
             VBO = GL.GenBuffer();
@@ -85,6 +98,23 @@ namespace Match3Example
 
         public void Render(Shader shader, Camera camera, string text, Vector2 position, float scale, Vector3 color)
         {
+            TextRenderSettings settings = new TextRenderSettings();
+            settings.align = TextRenderAlign.Left;
+
+            Render(shader, camera, text, position, scale, color, settings);
+        }
+
+        public void Render(Shader shader, Camera camera, string text, Vector2 position, float scale, Vector3 color, TextRenderSettings settings)
+        {
+            scale *= defaultScale;
+
+            float alignPos = 0;
+
+            if (settings.align == TextRenderAlign.Center)
+                alignPos = AlignCenterPosition(text, position, scale);
+
+            position.X -= alignPos / 2;
+
             shader.Use();
             camera.Use(shader);
 
@@ -92,13 +122,11 @@ namespace Match3Example
             GL.ActiveTexture(0);
             GL.BindVertexArray(VAO);
 
-            scale *= defaultScale;
-
             for (int i = 0; i < text.Length; i++)
             {
                 try
                 {
-                    if(text[i] == ' ')
+                    if (text[i] == ' ')
                     {
                         position.X += glyphTextures[0].Advance * scale + charDistance * scale;
                     }
@@ -119,17 +147,8 @@ namespace Match3Example
             GL.BindTexture(TextureTarget.Texture2D, 0);
         }
 
-        public void RenderAlignCenter(Shader shader, Camera camera, string text, Vector2 position, float scale, Vector3 color)
+        private float AlignCenterPosition(string text, Vector2 position, float scale)
         {
-            shader.Use();
-            camera.Use(shader);
-
-            shader.SetUniformVector3("textColor", color);
-            GL.ActiveTexture(0);
-            GL.BindVertexArray(VAO);
-
-            scale *= defaultScale;
-
             float alignPos = 0;
 
             for (int i = 0; i < text.Length; i++)
@@ -151,34 +170,10 @@ namespace Match3Example
                 }
             }
 
-            position.X -= alignPos / 2;
-
-            for (int i = 0; i < text.Length; i++)
-            {
-                try
-                {
-                    if (text[i] == ' ')
-                    {
-                        position.X += glyphTextures[0].Advance * scale + charDistance * scale;
-                    }
-                    else if (charDictionary.ContainsKey(text[i]))
-                    {
-                        RenderGlyph((int)charDictionary[text[i]], position, scale);
-                        position.X += glyphTextures[(int)charDictionary[text[i]]].Advance * scale + charDistance * scale;
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.ToString());
-                }
-            }
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.BindVertexArray(0);
-            GL.BindTexture(TextureTarget.Texture2D, 0);
+            return alignPos;
         }
 
-        void RenderGlyph(int c, Vector2 position, float scale)
+        private void RenderGlyph(int c, Vector2 position, float scale)
         {
             GlyphTexture ch = glyphTextures[c];
 
@@ -206,12 +201,31 @@ namespace Match3Example
             GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
         }
     }
+}
 
-    struct GlyphTexture
+namespace Match3Example.Text
+{
+    public struct GlyphTexture
     {
         public int TextureID; // ID handle of the glyph texture
         public Vector2 Size; // Size of glyph
         public Vector2 Bearing; // Offset from baseline to left/top of glyph
         public int Advance; // Offset to advance to next glyph
+    }
+
+    public struct TextRenderSettings
+    {
+        public TextRenderAlign align;
+
+        public TextRenderSettings(TextRenderAlign align)
+        {
+            this.align = align; 
+        }
+    }
+
+    public enum TextRenderAlign
+    {
+        Left = 0,
+        Center = 1
     }
 }

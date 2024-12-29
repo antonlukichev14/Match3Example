@@ -1,9 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Match3Example
 {
@@ -62,8 +57,8 @@ namespace Match3Example
             Matrix4 rotationY = Matrix4.CreateRotationY(yaw);
             Matrix4 rotationZ = Matrix4.CreateRotationZ(roll);
 
-            // Объединяем матрицы (порядок имеет значение)
-            return rotationZ * rotationY * rotationX; // Учитываем порядок вращения
+            // Объединяем матрицы
+            return rotationZ * rotationY * rotationX;
         }
 
         static public Transforms Default() { return new Transforms(); }

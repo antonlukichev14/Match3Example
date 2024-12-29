@@ -51,10 +51,10 @@ namespace Match3Example.Scenes.GameBehavior
 
         public void OnMouseMove()
         {
-            if(game.cells.collider.ScreenPointCollison(game.mainCamera, MouseInput.MousePosition))
+            if(game.GameField.collider.ScreenPointCollison(game.mainCamera, MouseInput.MousePosition))
             {
-                Vector2 AABBpoint1 = game.cells.collider.GetScreenAABBpoint(game.mainCamera, 0);
-                Vector2 AABBpoint2 = game.cells.collider.GetScreenAABBpoint(game.mainCamera, 1);
+                Vector2 AABBpoint1 = game.GameField.collider.GetScreenAABBpoint(game.mainCamera, 0);
+                Vector2 AABBpoint2 = game.GameField.collider.GetScreenAABBpoint(game.mainCamera, 1);
 
                 float a = AABBpoint2.X - AABBpoint1.X;
                 float a8 = a / 8;
