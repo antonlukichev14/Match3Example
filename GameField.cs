@@ -35,14 +35,14 @@ namespace Match3Example
             }
 
             int[,] cellsByIndex = GenerateStartCells();
-            ApplyByIndex(cellsByIndex);
+            ApplyCellsByIndex(cellsByIndex);
             ConsolePrintIndex();
         }
 
         int tr = 100;
         private int[,] GenerateStartCells()
         {
-            int[,] cellsByIndex = Match3.Randomize(cells, 0, Element.elementsCount);
+            int[,] cellsByIndex = Match3.Randomize(new Vector2i(cells.GetLength(0), cells.GetLength(1)), 0, Element.elementsCount);
 
             int i = 0;
             while (!Match3.IsWithoutDelete(cellsByIndex))
@@ -73,7 +73,7 @@ namespace Match3Example
             }
         }
 
-        public void ApplyByIndex(int[,] cellsByIndex)
+        public void ApplyCellsByIndex(int[,] cellsByIndex)
         {
             for(int i = 0; i < cells.GetLength(0); i++)
             {
@@ -87,6 +87,21 @@ namespace Match3Example
         public Vector3 GetNewPositionByIndex(Vector2i index)
         {
             return new Vector3(index.X + transormOffset.X, 0, index.Y + transormOffset.Y);
+        }
+
+        public int[,] GetCellsByIndex()
+        {
+            int[,] indexCells = new int[cells.GetLength(0), cells.GetLength(1)];
+
+            for (int i = 0; i < cells.GetLength(0); i++)
+            {
+                for (int j = 0; j < cells.GetLength(1); j++)
+                {
+                    indexCells[i, j] = cells[i, j].element != null ? cells[i, j].element.ID : -1;
+                }
+            }
+
+            return indexCells;
         }
     }
 }

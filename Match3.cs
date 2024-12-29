@@ -9,62 +9,9 @@ namespace Match3Example
 {
     static class Match3
     {
-        public static bool[,] CheckDelete(Cell[,] cells)
+        public static bool[,] CheckDelete(GameField gameField)
         {
-            bool[,] deleteElements = new bool[cells.GetLength(0), cells.GetLength(1)];
-
-            for (int i = 0; i < cells.GetLength(0); i++)
-            {
-                for (int j = 0; j < cells.GetLength(1); j++)
-                {
-                    int currentIDelement = cells[i, j].element != null ? cells[i, j].element.ID : -1;
-
-                    int xCount = 1;
-                    int yCount = 1;
-
-                    if (i + 1 < cells.GetLength(0))
-                    {
-                        if (cells[i + 1, j].element != null && cells[i + 1, j].element.ID == currentIDelement)
-                        {
-                            xCount++;
-                            while (i + xCount < cells.GetLength(0) && cells[i + xCount, j].element != null && cells[i + xCount, j].element.ID == currentIDelement)
-                            {
-                                xCount++;
-                            }
-                        }
-                    }
-
-                    if (j + 1 < cells.GetLength(1))
-                    {
-                        if (cells[i, j + 1].element != null && cells[i, j + 1].element.ID == currentIDelement)
-                        {
-                            yCount++;
-                            while (j + yCount < cells.GetLength(1) && cells[i, j + yCount].element != null && cells[i, j + yCount].element.ID == currentIDelement)
-                            {
-                                yCount++;
-                            }
-                        }
-                    }
-
-                    if (xCount > 2)
-                    {
-                        for (int m = 0; m < xCount; m++)
-                        {
-                            deleteElements[i + m, j] = true;
-                        }
-                    }
-
-                    if (yCount > 2)
-                    {
-                        for (int m = 0; m < yCount; m++)
-                        {
-                            deleteElements[i, j + m] = true;
-                        }
-                    }
-                }
-            }
-
-            return deleteElements;
+            return CheckDelete(gameField.GetCellsByIndex());
         }
 
         public static bool[,] CheckDelete(int[,] cells)
@@ -76,6 +23,9 @@ namespace Match3Example
                 for (int j = 0; j < cells.GetLength(1); j++)
                 {
                     int currentIDelement = cells[i, j];
+
+                    if (currentIDelement == -1)
+                        continue;
 
                     int xCount = 1;
                     int yCount = 1;
@@ -125,19 +75,9 @@ namespace Match3Example
             return deleteElements;
         }
 
-        public static bool IsWithoutDelete(Cell[,] cells)
+        public static bool IsWithoutDelete(GameField gameField)
         {
-            bool[,] deleteElements = CheckDelete(cells);
-
-            for (int i = 0; i < cells.GetLength(0); i++)
-            {
-                for (int j = 0; j < cells.GetLength(1); j++)
-                {
-                    if (deleteElements[i, j] == true) return false;
-                }
-            }
-
-            return true;
+            return IsWithoutDelete(gameField.GetCellsByIndex());
         }
 
         public static bool IsWithoutDelete(int[,] cells)
@@ -155,28 +95,9 @@ namespace Match3Example
             return true;
         }
 
-        public static int[,] MaskRandomize(Cell[,] cells, bool[,] mask, int minValue, int maxValue)
+        public static int[,] MaskRandomize(GameField gameField, bool[,] mask, int minValue, int maxValue)
         {
-            Random random = new Random();
-
-            int[,] newCellsByIndex = new int[cells.GetLength(0), cells.GetLength(1)];
-
-            for (int i = 0; i < cells.GetLength(0); i++)
-            {
-                for (int j = 0; j < cells.GetLength(1); j++)
-                {
-                    if (mask[i, j] == false)
-                    {
-                        newCellsByIndex[i, j] = cells[i, j].element.ID;
-                    }
-                    else
-                    {
-                        newCellsByIndex[i, j] = random.Next(minValue, maxValue);
-                    }
-                }
-            }
-
-            return newCellsByIndex;
+            return MaskRandomize(gameField.GetCellsByIndex(), mask, minValue, maxValue);
         }
 
         public static int[,] MaskRandomize(int[,] cells, bool[,] mask, int minValue, int maxValue)
@@ -203,15 +124,15 @@ namespace Match3Example
             return newCellsByIndex;
         }
 
-        public static int[,] Randomize(Cell[,] cells, int minValue, int maxValue)
+        public static int[,] Randomize(Vector2i GameFieldSize, int minValue, int maxValue)
         {
             Random random = new Random();
 
-            int[,] newCellsByIndex = new int[cells.GetLength(0), cells.GetLength(1)];
+            int[,] newCellsByIndex = new int[GameFieldSize.X, GameFieldSize.Y];
 
-            for (int i = 0; i < cells.GetLength(0); i++)
+            for (int i = 0; i < GameFieldSize.X; i++)
             {
-                for (int j = 0; j < cells.GetLength(1); j++)
+                for (int j = 0; j < GameFieldSize.Y; j++)
                 {
                     newCellsByIndex[i, j] = random.Next(minValue, maxValue);
                 }
@@ -220,7 +141,12 @@ namespace Match3Example
             return newCellsByIndex;
         }
 
-        public static int[,] ElementsFall(Cell[,] cells)
+        public static int[,] ElementsFall(GameField gameField)
+        {
+            return ElementsFall(gameField.GetCellsByIndex());
+        }
+
+        public static int[,] ElementsFall(int[,] cells)
         {
             Vector2i cellSize = new Vector2i(cells.GetLength(0), cells.GetLength(1));
             bool[,] cellNotEmpty = new bool[cellSize.X, cellSize.Y];
@@ -230,7 +156,7 @@ namespace Match3Example
             {
                 for (int j = 0; j < cellSize.Y; j++)
                 {
-                    if (cells[i, j].element != null)
+                    if (cells[i, j] != -1)
                     {
                         int mincell = cellSize.Y - 1;
 
@@ -248,19 +174,15 @@ namespace Match3Example
                 }
             }
 
-            for (int i = cellSize.X - 1; i >= 0; i--)
-            {
-                for (int j = cellSize.Y - 1; j >= 0; j--)
-                {
-                    Console.Write(elementsFall[j, i]);
-                }
-                Console.Write("\n");
-            }
-
             return elementsFall;
         }
 
-        public static (bool status, bool[,] empty) CheckEmptyCells(Cell[,] cells)
+        public static (bool status, bool[,] empty) CheckEmptyCells(GameField gameField)
+        {
+            return CheckEmptyCells(gameField.GetCellsByIndex());
+        }
+
+        public static (bool status, bool[,] empty) CheckEmptyCells(int[,] cells)
         {
             bool status = false;
             bool[,] empty = new bool[cells.GetLength(0), cells.GetLength(1)];
@@ -269,7 +191,7 @@ namespace Match3Example
             {
                 for(int j = 0; j < cells.GetLength(1); j++)
                 {
-                    if (cells[i, j].element == null)
+                    if (cells[i, j] == -1)
                     {
                         status = true;
                         empty[i, j] = true;

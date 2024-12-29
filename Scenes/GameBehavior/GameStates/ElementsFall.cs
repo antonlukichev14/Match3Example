@@ -68,7 +68,7 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
 
         public void Start()
         {
-            elementsFall = Match3.ElementsFall(game.GameField.cells);
+            elementsFall = Match3.ElementsFall(game.GameField);
             InstantiateList();
         }
 

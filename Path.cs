@@ -11,7 +11,7 @@ namespace Match3Example
         private static string absoluteAssetsPath = "D:/Works/VS/OpenTK/Match3Example/Assets/";
         private static string relativeAssetsPath = "Assets/";
 
-        public static bool useAbsolute = false;
+        public static bool useAbsolute = true;
 
         public static string GetAssetPath(string filename)
         {

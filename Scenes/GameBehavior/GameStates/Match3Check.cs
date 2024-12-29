@@ -22,9 +22,9 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
         public override void Update()
         {
             bool toSE = game.state == GameState.Match3CheckSE ? true : false;
-            GameField cells = game.GameField;
+            GameField gameField = game.GameField;
 
-            if (Match3.IsWithoutDelete(cells.cells))
+            if (Match3.IsWithoutDelete(gameField))
             {
                 if (toSE)
                 {
@@ -32,7 +32,7 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
                     return;
                 }
 
-                (bool status, bool[,] empty) checkEmptyCells = Match3.CheckEmptyCells(cells.cells);
+                (bool status, bool[,] empty) checkEmptyCells = Match3.CheckEmptyCells(gameField);
                 if (checkEmptyCells.status)
                 {
                     gne.Start(checkEmptyCells.empty);
@@ -46,7 +46,7 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
                 }
             }
 
-            bool[,] deleteCells = Match3.CheckDelete(cells.cells);
+            bool[,] deleteCells = Match3.CheckDelete(gameField);
 
             for (int i = 0; i < deleteCells.GetLength(0); i++)
             {
@@ -54,7 +54,7 @@ namespace Match3Example.Scenes.GameBehavior.GameStates
                 {
                     if (deleteCells[i, j])
                     {
-                        cells.cells[i, j].element = null;
+                        gameField.cells[i, j].element = null;
                         game.score++;
                     }
                 }
